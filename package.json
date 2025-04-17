@@ -1,0 +1,14 @@
+{
+    "workspaces": [
+        "src/client",
+        "src/server"
+    ],
+	"scripts": {
+		"client:dev": "npm run dev -w client",
+		"server:dev": "npm run dev -w server"
+	},
+    "version": "0.0.0",
+    "devDependencies": {
+        "typescript": "^5.8.3"
+    }
+}
