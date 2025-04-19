@@ -1,0 +1,9 @@
+{
+	"compilerOptions": {
+		"target": "ESNext",
+		"module": "ESNext",
+		"allowSyntheticDefaultImports": true
+	},
+    "include": ["./src/**/*.ts", "./src/client/**/*.tsx"],
+    "exclude": ["node_modules"]
+}

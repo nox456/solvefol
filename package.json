@@ -3,9 +3,12 @@
         "src/client",
         "src/server"
     ],
+	"type": "module",	
 	"scripts": {
-		"client:dev": "npm run dev -w client",
-		"server:dev": "npm run dev -w server"
+		"client:dev": "vite src/client",
+		"server:dev": "tsx --env-file .env --watch src/server/index.ts",
+		"server:migrate": "prisma migrate dev --schema src/server/prisma/schema.prisma",
+		"server:generate": "prisma generate --schema src/server/prisma/schema.prisma"
 	},
     "version": "0.0.0",
     "devDependencies": {
