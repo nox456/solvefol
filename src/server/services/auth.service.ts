@@ -40,6 +40,6 @@ export default class AuthService {
             return new ForbiddenResponse("Contraseña incorrecta!");
         const token = jwt.sign(userFounded.id, env.JWT_SECRET);
 
-        return new OKResponse("Sesion iniciada!", token);
+        return new OKResponse(`Sesion iniciada! [${userFounded.role}]`, token);
     }
 }

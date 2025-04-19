@@ -1,7 +1,7 @@
 export type UserAuth = {
-	username: string;
-	password: string;
-}
+    username: string;
+    password: string;
+};
 
 export enum ResponseStatus {
     OK = 200,

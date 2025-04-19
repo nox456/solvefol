@@ -1,7 +1,13 @@
-import type { Response, Request } from "express";
+import type { Response, Request, CookieOptions } from "express";
 import AuthService from "../services/auth.service";
 import { ResponseStatus } from "../../lib/types";
 import { validateFields } from "../utils/validator";
+
+const cookieOptions: CookieOptions = {
+    httpOnly: true,
+    secure: false,
+    sameSite: "lax",
+};
 
 export default class AuthController {
     static async signup(req: Request, res: Response) {
@@ -15,11 +21,7 @@ export default class AuthController {
             try {
                 const result = await AuthService.signup({ username, password });
                 if (result.code == 200) {
-                    res.cookie("token", result.data, {
-                        httpOnly: true,
-                        secure: false,
-                        sameSite: "lax",
-                    });
+                    res.cookie("token", result.data, cookieOptions);
                 }
                 res.status(result.code).json({ message: result.msg });
             } catch (e) {
@@ -30,9 +32,9 @@ export default class AuthController {
             }
         }
     }
-	static async signin(req: Request, res: Response) {
-		const { username, password } = req.body;
-		const validationMsg = validateFields({ username, password });
+    static async signin(req: Request, res: Response) {
+        const { username, password } = req.body;
+        const validationMsg = validateFields({ username, password });
         if (validationMsg) {
             res.status(ResponseStatus.BAD_REQUEST).json({
                 message: validationMsg,
@@ -41,11 +43,7 @@ export default class AuthController {
             try {
                 const result = await AuthService.signin({ username, password });
                 if (result.code == 200) {
-                    res.cookie("token", result.data, {
-                        httpOnly: true,
-                        secure: false,
-                        sameSite: "lax",
-                    });
+                    res.cookie("token", result.data, cookieOptions);
                 }
                 res.status(result.code).json({ message: result.msg });
             } catch (e) {
@@ -55,6 +53,10 @@ export default class AuthController {
                 });
             }
         }
-
-	}
+    }
+    static async logout(_: any, res: Response) {
+        res.clearCookie("token", cookieOptions).json({
+            message: "Sesion cerrada!",
+        });
+    }
 }
