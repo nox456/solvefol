@@ -1,8 +1,11 @@
 {
 	"compilerOptions": {
-		"target": "ESNext",
+		"target": "es2022",
 		"module": "ESNext",
-		"allowSyntheticDefaultImports": true
+		"allowSyntheticDefaultImports": true,
+		"strict": true,
+		"jsx": "preserve",
+		"moduleResolution": "bundler"
 	},
     "include": ["./src/**/*.ts", "./src/client/**/*.tsx"],
     "exclude": ["node_modules"]
