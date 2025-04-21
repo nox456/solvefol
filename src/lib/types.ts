@@ -1,3 +1,5 @@
+import { Response } from "../server/utils/Response";
+
 export type UserAuth = {
     username: string;
     password: string;
@@ -15,3 +17,5 @@ export enum FormAction {
 	SIGNUP = "signup",
 	SIGNIN = "signin",
 }
+
+export type ServerResponse = Response;
