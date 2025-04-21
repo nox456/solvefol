@@ -1,8 +1,9 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import HomeCard from "../ui/HomeCard";
 import { FormAction, ServerResponse } from "../../../lib/types";
 import "./LogginForm.css";
 import { useNavigate } from "react-router";
+import { type ErrorType, LoginSchema } from "../../schemas/loggin.schema";
 
 type Props = {
     action: FormAction;
@@ -11,34 +12,46 @@ type Props = {
 export default function LogginForm({ action }: Props) {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
-    const [error, setError] = useState("");
+    const [error, setError] = useState<ErrorType | null>();
     const navigate = useNavigate();
+
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        const response = await fetch(
-            `${import.meta.env.FRONTEND_API_URL}/auth/${action}`,
-            {
-                credentials: "include",
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                    username,
-                    password,
-                }),
-            },
-        );
-        if (response.status == 200) {
-            navigate("/dashboard");
+        const validation = LoginSchema.safeParse({ username, password });
+        if (!validation.success) {
+            setError({
+                msg: validation.error.issues[0].message,
+                type: "validation",
+                field: validation.error.issues[0].path[0].toString(),
+            });
         } else {
-            const { msg }: ServerResponse = await response.json();
-            setError(msg);
+            const response = await fetch(
+                `${import.meta.env.FRONTEND_API_URL}/auth/${action}`,
+                {
+                    credentials: "include",
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                        username,
+                        password,
+                    }),
+                },
+            );
+            if (response.status == 200) {
+                navigate("/dashboard");
+            } else {
+                const { message }: ServerResponse = await response.json();
+                setError({ msg: message, type: "query" });
+            }
         }
     };
     return (
         <HomeCard>
-			<p className="form-login-error">{error}</p>
+            <p className="form-login-error">
+                {error?.type == "query" ? error.msg : ""}
+            </p>
             <form onSubmit={handleSubmit} className="form-login">
                 <input
                     type="text"
@@ -47,6 +60,9 @@ export default function LogginForm({ action }: Props) {
                     value={username}
                     onChange={(e) => setUsername(e.target.value)}
                 />
+                {error?.type == "validation" && error?.field == "username" && (
+                    <p className="form-login-error">{error.msg}</p>
+                )}
                 <input
                     type="password"
                     className="form-login-input"
@@ -54,6 +70,9 @@ export default function LogginForm({ action }: Props) {
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                 />
+                {error?.type == "validation" && error?.field == "password" && (
+                    <p className="form-login-error">{error.msg}</p>
+                )}
                 <button type="submit" className="form-login-button">
                     {action == FormAction.SIGNUP
                         ? "Registrarse"
