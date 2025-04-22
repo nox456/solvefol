@@ -16,7 +16,7 @@ export default function LogginForm({ action }: Props) {
     const [error, setError] = useState<ErrorType | null>();
     const navigate = useNavigate();
 
-    const { signin } = useAuth();
+    const { loggin } = useAuth();
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -43,7 +43,7 @@ export default function LogginForm({ action }: Props) {
                 },
             );
             if (response.status == 200) {
-				signin(await response.json());
+                loggin((await response.json()).user);
                 navigate("/dashboard");
             } else {
                 const { message }: ServerResponse = await response.json();

@@ -9,12 +9,12 @@ import { User } from "../../../lib/types";
 
 export const AuthContext = createContext<{
     user: User | null;
-    signin: Function;
+    loggin: Function;
     isAuthenticated: boolean;
     loading: boolean;
 }>({
     user: null,
-    signin: () => {},
+    loggin: () => {},
     isAuthenticated: false,
     loading: false,
 });
@@ -29,7 +29,7 @@ export default function AuthProvider({ children }: Props) {
     const [user, setUser] = useState<User | null>(null);
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const [loading, setLoading] = useState(true);
-    const signin = (user: User) => {
+    const loggin = (user: User) => {
         setUser(user);
         setIsAuthenticated(true);
     };
@@ -46,12 +46,16 @@ export default function AuthProvider({ children }: Props) {
                 setIsAuthenticated(true);
                 setUser(await response.json());
 				setLoading(false);
-            }
+            } else {
+				setLoading(false);
+				setIsAuthenticated(false);
+				setUser(null);
+			}
         }
         checkIsAuthenticated();
     }, []);
     return (
-        <AuthContext value={{ user, signin, isAuthenticated, loading }}>
+        <AuthContext value={{ user, loggin, isAuthenticated, loading }}>
             {children}
         </AuthContext>
     );

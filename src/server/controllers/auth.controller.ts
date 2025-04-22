@@ -19,11 +19,15 @@ export default class AuthController {
             });
         } else {
             try {
-                const result = await AuthService.signup({ username, password });
+                const result = await AuthService.signup({
+                    username,
+                    password,
+                });
+                const { token, user } = result.data;
                 if (result.code == 200) {
-                    res.cookie("token", result.data, cookieOptions);
+                    res.cookie("token", token, cookieOptions);
                 }
-                res.status(result.code).json({ message: result.msg });
+                res.status(result.code).json({ message: result.msg, user });
             } catch (e) {
                 console.error(e);
                 res.status(ResponseStatus.INTERNAL_SERVER_ERROR).json({
@@ -42,10 +46,11 @@ export default class AuthController {
         } else {
             try {
                 const result = await AuthService.signin({ username, password });
+                const { token, user } = result.data;
                 if (result.code == 200) {
-                    res.cookie("token", result.data, cookieOptions);
+                    res.cookie("token", token, cookieOptions);
                 }
-                res.status(result.code).json({ message: result.msg });
+                res.status(result.code).json({ message: result.msg, user });
             } catch (e) {
                 console.error(e);
                 res.status(ResponseStatus.INTERNAL_SERVER_ERROR).json({
@@ -59,26 +64,26 @@ export default class AuthController {
             message: "Sesion cerrada!",
         });
     }
-	static async isAuthenticated(req: Request, res: Response) {
-		const { token } = req.cookies;
-		if (token) {
-			try {
-				const result = await AuthService.isAuthenticated(token);
-				if (result.code == 200) {
-					res.status(result.code).json(result.data);
-				} else {
-					res.status(result.code).json({ message: result.msg });
-				}
-			} catch (e) {
-				console.error(e);
-				res.status(ResponseStatus.INTERNAL_SERVER_ERROR).json({
-					message: "Internal Server Error!",
-				});
-			}
-		} else {
-			res.status(ResponseStatus.FORBIDDEN).json({
-				message: "No autenticado!",
-			});
-		}
-	}
+    static async isAuthenticated(req: Request, res: Response) {
+        const { token } = req.cookies;
+        if (token) {
+            try {
+                const result = await AuthService.isAuthenticated(token);
+                if (result.code == 200) {
+                    res.status(result.code).json(result.data);
+                } else {
+                    res.status(result.code).json({ message: result.msg });
+                }
+            } catch (e) {
+                console.error(e);
+                res.status(ResponseStatus.INTERNAL_SERVER_ERROR).json({
+                    message: "Internal Server Error!",
+                });
+            }
+        } else {
+            res.status(ResponseStatus.FORBIDDEN).json({
+                message: "No autenticado!",
+            });
+        }
+    }
 }
