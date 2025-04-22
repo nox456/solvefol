@@ -1,9 +1,10 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import HomeCard from "../ui/HomeCard";
 import { FormAction, ServerResponse } from "../../../lib/types";
 import "./LogginForm.css";
 import { useNavigate } from "react-router";
 import { type ErrorType, LoginSchema } from "../../schemas/loggin.schema";
+import { useAuth } from "../context/AuthProvider";
 
 type Props = {
     action: FormAction;
@@ -14,6 +15,8 @@ export default function LogginForm({ action }: Props) {
     const [password, setPassword] = useState("");
     const [error, setError] = useState<ErrorType | null>();
     const navigate = useNavigate();
+
+    const { signin } = useAuth();
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -40,6 +43,7 @@ export default function LogginForm({ action }: Props) {
                 },
             );
             if (response.status == 200) {
+				signin(await response.json());
                 navigate("/dashboard");
             } else {
                 const { message }: ServerResponse = await response.json();

@@ -6,5 +6,6 @@ const authRouter = Router();
 authRouter.post("/signup", AuthController.signup);
 authRouter.post("/signin", AuthController.signin);
 authRouter.post("/logout", AuthController.logout);
+authRouter.get("/is-authenticated", AuthController.isAuthenticated);
 
-export default authRouter; 
+export default authRouter;

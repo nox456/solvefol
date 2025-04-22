@@ -1,3 +1,5 @@
+import { Premises, Role } from "../server/generated/prisma";
+
 export type UserAuth = {
     username: string;
     password: string;
@@ -12,10 +14,16 @@ export enum ResponseStatus {
 }
 
 export enum FormAction {
-	SIGNUP = "signup",
-	SIGNIN = "signin",
+    SIGNUP = "signup",
+    SIGNIN = "signin",
 }
 
 export type ServerResponse = {
-	message: string;
+    message: string;
+};
+
+export type User = {
+    username: string;
+    role: Role;
+	premises: Premises[];
 };

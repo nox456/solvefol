@@ -42,4 +42,19 @@ export default class AuthService {
 
         return new OKResponse(`Sesion iniciada! [${userFounded.role}]`, token);
     }
+	static async isAuthenticated(token: string) {
+		const decoded = jwt.verify(token, env.JWT_SECRET).toString();
+		const user = await db.user.findUnique({
+			where: { id: decoded },
+			include: {
+				premises: true
+			},
+			omit: {
+				id: true,
+				password: true,
+			}
+		});
+		if (!user) return new NotFoundResponse("Usuario no encontrado!");
+		return new OKResponse("Usuario autenticado!", user);
+	}
 }
