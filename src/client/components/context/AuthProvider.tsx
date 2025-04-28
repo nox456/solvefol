@@ -32,6 +32,7 @@ export default function AuthProvider({ children }: Props) {
     const loggin = (user: User) => {
         setUser(user);
         setIsAuthenticated(true);
+		setLoading(false);
     };
     useEffect(() => {
         async function checkIsAuthenticated() {
@@ -45,12 +46,12 @@ export default function AuthProvider({ children }: Props) {
             if (response.status == 200) {
                 setIsAuthenticated(true);
                 setUser(await response.json());
-				setLoading(false);
+                setLoading(false);
             } else {
-				setLoading(false);
-				setIsAuthenticated(false);
-				setUser(null);
-			}
+                setLoading(false);
+                setIsAuthenticated(false);
+                setUser(null);
+            }
         }
         checkIsAuthenticated();
     }, []);

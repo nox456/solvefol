@@ -23,11 +23,13 @@ export default class AuthController {
                     username,
                     password,
                 });
-                const { token, user } = result.data;
                 if (result.code == 200) {
+                    const { token, user } = result.data;
                     res.cookie("token", token, cookieOptions);
-                }
-                res.status(result.code).json({ message: result.msg, user });
+                    res.status(result.code).json({ message: result.msg, user });
+                } else {
+                    res.status(result.code).json({ message: result.msg });
+				}
             } catch (e) {
                 console.error(e);
                 res.status(ResponseStatus.INTERNAL_SERVER_ERROR).json({
@@ -46,11 +48,13 @@ export default class AuthController {
         } else {
             try {
                 const result = await AuthService.signin({ username, password });
-                const { token, user } = result.data;
                 if (result.code == 200) {
+                    const { token, user } = result.data;
                     res.cookie("token", token, cookieOptions);
-                }
-                res.status(result.code).json({ message: result.msg, user });
+                    res.status(result.code).json({ message: result.msg, user });
+                } else {
+                    res.status(result.code).json({ message: result.msg });
+				}
             } catch (e) {
                 console.error(e);
                 res.status(ResponseStatus.INTERNAL_SERVER_ERROR).json({

@@ -1,6 +1,5 @@
 import { ReactElement } from "react";
 import { Link, useLocation } from "react-router";
-import "./HomeCard.css";
 
 type Props = {
     children: ReactElement | ReactElement[];
